@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Moyenne Générale</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-200">
+    <!-- Bouton de changement de thème -->
+    <div class="fixed top-4 left-4 z-50">
+        <button id="theme-toggle" class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 shadow-md hover:shadow-lg transition-all duration-200">
+            <!-- Icône soleil (mode clair) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <!-- Icône lune (mode sombre) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-300 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Conteneur pour les messages d'erreur -->
+    <div id="errorContainer" class="fixed top-4 right-4 w-80 max-w-full space-y-2 z-50"></div>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold text-center mb-8 text-primary">Calculateur de Moyenne Générale</h1>
+        
+        <!-- Étape 1: Saisie du nombre de matières -->
+        <div id="step1" class="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Étape 1: Nombre de matières</h2>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-grow">
+                    <label for="numberOfSubjects" class="block mb-2">Combien de matières étudiez-vous?</label>
+                    <input type="number" id="numberOfSubjects" min="1" value="1" class="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" required>
+                </div>
+                <div class="flex items-end">
+                    <button id="createSubjectsBtn" class="px-6 py-2 bg-primary hover:bg-opacity-90 text-white rounded-md transition-colors duration-200">Continuer</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Étape 2: Configuration des matières et épreuves -->
+        <div id="step2" class="mb-8 hidden">
+            <h2 class="text-xl font-semibold mb-4">Étape 2: Configuration des matières</h2>
+            <div id="subjectsContainer" class="space-y-6"></div>
+            <div class="mt-6 flex justify-center">
+                <button id="calculateBtn" class="px-8 py-3 bg-primary hover:bg-opacity-90 text-white rounded-md transition-colors duration-200 font-semibold">Calculer la moyenne générale</button>
+            </div>
+        </div>
+        
+        <!-- Étape 3: Résultat -->
+        <div id="step3" class="mb-8 hidden bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Résultat</h2>
+            <div class="text-center">
+                <p class="mb-2">Votre moyenne générale est</p>
+                <div class="text-5xl font-bold text-primary mb-4" id="finalAverage">--/20</div>
+                <div id="evaluation-message" class="mt-2 p-3 rounded-lg font-medium"></div>
+                
+                <div id="detailedResults" class="mt-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Tableau détaillé:</h3>
+                        <div class="flex gap-2">
+                            <button id="exportCSV" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm">Exporter CSV</button>
+                            <button id="exportPDF" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm">Exporter PDF</button>
+                            <button id="exportJSON" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm">Exporter JSON</button>
+                        </div>
+                    </div>
+                    
+                    <div id="detailedTableContainer" class="overflow-x-auto mb-6">
+                        <table id="detailedTable" class="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-700">
+                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Matière</th>
+                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Coefficient</th>
+                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Épreuves</th>
+                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-right">Moyenne</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailedTableBody">
+                                <!-- Le contenu sera rempli dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold mb-2">Récapitulatif par matière:</h3>
+                    <div id="subjectResults" class="space-y-2 text-left"></div>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex justify-center">
+                <button id="resetBtn" class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors duration-200">Recommencer</button>
+            </div>
+            
+            <!-- Élément caché pour l'export PDF -->
+            <div id="pdfExport" class="hidden">
+                <h2 class="text-xl font-bold mb-4">Relevé de notes</h2>
+                <p class="mb-4">Moyenne générale: <span id="pdfAverage"></span></p>
+                <div id="pdfTable"></div>
+            </div>
+        </div>
+        
+        <!-- Importation du fichier JavaScript principal en mode module -->
+        <script type="module" src="js/app.js"></script>
+    </div>
+    
+    <!-- Template pour une matière -->
+    <template id="subjectTemplate">
+        <div class="subject-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div class="mb-4 flex flex-col sm:flex-row gap-4">
+                <div class="flex-grow">
+                    <label class="block mb-2">Nom de la matière</label>
+                    <input type="text" class="subject-name w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" required>
+                </div>
+                <div class="w-full sm:w-1/3">
+                    <label class="block mb-2">Coefficient</label>
+                    <input type="number" class="subject-weight w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="0.1" step="0.1" value="1" required>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-semibold">Épreuves</h3>
+                    <button class="add-exam px-4 py-1 bg-primary text-white rounded-md text-sm">+ Ajouter une épreuve</button>
+                </div>
+                <div class="exams-container space-y-4">
+                    <!-- Les épreuves seront ajoutées ici -->
+                </div>
+                <div class="percentage-total mt-2 text-sm"></div>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Template pour une épreuve -->
+    <template id="examTemplate">
+        <div class="exam-item flex flex-col sm:flex-row gap-2 border-t border-gray-200 dark:border-gray-700 pt-3">
+            <div class="flex-grow">
+                <label class="block mb-1 text-sm">Note (/20)</label>
+                <input type="number" class="exam-grade w-full px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="0" max="20" step="0.1" required>
+            </div>
+            <div class="flex-grow">
+                <label class="block mb-1 text-sm">Pourcentage (%)</label>
+                <input type="number" class="exam-percentage w-full px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="1" max="100" step="1" required>
+            </div>
+            <div class="flex items-end mb-1">
+                <button class="remove-exam px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm">✕</button>
+            </div>
+        </div>
+    </template>
+
+</body>
+</html>

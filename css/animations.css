@@ -1,0 +1,35 @@
+/* Animation pour les messages d'erreur */
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+#errorContainer > div {
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+#errorContainer > div.opacity-0 {
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+/* Animation du bouton de thème */
+#theme-toggle {
+    transition: transform 0.5s ease;
+}
+
+#theme-toggle.rotate-180 {
+    transform: rotate(180deg);
+}
+
+/* Effet subtil de pulsation lors du changement de thème */
+.theme-transition {
+    animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
