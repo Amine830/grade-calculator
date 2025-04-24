@@ -138,3 +138,58 @@ export function calculateGeneralAverage(subjects) {
         averageTotal: averageTotal
     };
 }
+
+/**
+ * Calcule les résultats avec un système simple
+ * @param {Object} data - Données à traiter
+ * @returns {Object} - Résultats calculés
+ */
+export function calculateResults(data) {
+    const results = {
+        subjects: [],
+        averageTotal: 0
+    };
+    
+    let totalWeight = 0;
+    let weightedSum = 0;
+    
+    data.subjects.forEach(subject => {
+        // Calculer la moyenne de la matière
+        let totalPercentage = 0;
+        let gradedSum = 0;
+        
+        // Copier tous les examens dans les résultats
+        const subjectResult = {
+            id: subject.id,
+            name: subject.name,
+            weight: subject.weight,
+            exams: subject.exams || [], // Préserver les examens
+            average: 0
+        };
+        
+        // Calculer la moyenne si des examens existent
+        if (subject.exams && subject.exams.length > 0) {
+            subject.exams.forEach(exam => {
+                gradedSum += (exam.grade * exam.percentage);
+                totalPercentage += exam.percentage;
+            });
+            
+            if (totalPercentage > 0) {
+                subjectResult.average = gradedSum / totalPercentage;
+            }
+        }
+        
+        // Ajouter à la moyenne générale
+        weightedSum += subjectResult.average * subject.weight;
+        totalWeight += subject.weight;
+        
+        results.subjects.push(subjectResult);
+    });
+    
+    // Calculer la moyenne générale
+    if (totalWeight > 0) {
+        results.averageTotal = weightedSum / totalWeight;
+    }
+    
+    return results;
+}

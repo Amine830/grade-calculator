@@ -42,11 +42,71 @@
     <!-- Conteneur pour les messages d'erreur -->
     <div id="errorContainer" class="fixed top-4 right-4 w-80 max-w-full space-y-2 z-50"></div>
 
+    <!-- Conteneur principal -->
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <h1 class="text-3xl font-bold text-center mb-8 text-primary">Calculateur de Moyenne Générale</h1>
         
+        <!-- Étape 0: Configuration du système d'évaluation -->
+        <div id="step0" class="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-semibold mb-4">Configuration du système d'évaluation</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <!-- Structure académique -->
+            <div>
+              <h3 class="text-lg font-medium mb-2">Structure académique</h3>
+              
+              <div class="flex items-center mb-2">
+                <input type="checkbox" id="hasSemesters" class="mr-2 h-4 w-4">
+                <label for="hasSemesters">Organiser par semestres</label>
+              </div>
+              
+              <div class="flex items-center mb-2">
+                <input type="checkbox" id="hasBlocks" class="mr-2 h-4 w-4">
+                <label for="hasBlocks">Organiser par blocs de matières</label>
+              </div>
+            </div>
+            
+            <!-- Règles de validation -->
+            <div>
+              <h3 class="text-lg font-medium mb-2">Règles de validation</h3>
+              
+              <div class="flex items-center mb-2">
+                <input type="checkbox" id="compensationSubjects" class="mr-2 h-4 w-4" checked>
+                <label for="compensationSubjects">Compensation entre matières</label>
+              </div>
+              
+              <div class="flex items-center mb-2" id="blockCompensationContainer">
+                <input type="checkbox" id="compensationBlocks" class="mr-2 h-4 w-4">
+                <label for="compensationBlocks">Compensation entre blocs</label>
+              </div>
+              
+              <div class="flex items-center">
+                <label for="validationThreshold" class="mr-2">Seuil de validation :</label>
+                <input type="number" id="validationThreshold" class="w-16 py-1 px-2 border rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700" value="10" min="0" max="20">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Configuration dynamique des semestres et blocs -->
+          <div id="semestersConfig" class="hidden mb-4">
+            <h3 class="text-lg font-medium mb-2">Configuration des semestres</h3>
+            <div id="semestersContainer" class="space-y-2"></div>
+            <button id="addSemesterBtn" class="mt-2 px-3 py-1 bg-primary text-white rounded-md">+ Ajouter un semestre</button>
+          </div>
+          
+          <div id="blocksConfig" class="hidden">
+            <h3 class="text-lg font-medium mb-2">Configuration des blocs</h3>
+            <div id="blocksContainer" class="space-y-2"></div>
+            <button id="addBlockBtn" class="mt-2 px-3 py-1 bg-primary text-white rounded-md">+ Ajouter un bloc</button>
+          </div>
+          
+          <div class="mt-6 flex justify-end">
+            <button id="saveConfigBtn" class="px-4 py-2 bg-primary text-white rounded-md">Continuer</button>
+          </div>
+        </div>
+
         <!-- Étape 1: Saisie du nombre de matières -->
-        <div id="step1" class="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div id="step1" class="mb-8 hidden bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Étape 1: Nombre de matières</h2>
             <div class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-grow">
@@ -71,101 +131,122 @@
         <!-- Étape 3: Résultat -->
         <div id="step3" class="mb-8 hidden bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold mb-4">Résultat</h2>
-            <div class="text-center">
+            
+            <!-- Résumé global -->
+            <div class="text-center mb-8">
                 <p class="mb-2">Votre moyenne générale est</p>
                 <div class="text-5xl font-bold text-primary mb-4" id="finalAverage">--/20</div>
                 <div id="evaluation-message" class="mt-2 p-3 rounded-lg font-medium"></div>
-                
-                <div id="detailedResults" class="mt-8">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold">Tableau détaillé:</h3>
-                        <div class="flex gap-2">
-                            <button id="exportCSV" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm">Exporter CSV</button>
-                            <button id="exportPDF" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm">Exporter PDF</button>
-                            <button id="exportJSON" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm">Exporter JSON</button>
-                        </div>
-                    </div>
-                    
-                    <div id="detailedTableContainer" class="overflow-x-auto mb-6">
-                        <table id="detailedTable" class="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
-                            <thead>
-                                <tr class="bg-gray-100 dark:bg-gray-700">
-                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Matière</th>
-                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Coefficient</th>
-                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Épreuves</th>
-                                    <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-right">Moyenne</th>
-                                </tr>
-                            </thead>
-                            <tbody id="detailedTableBody">
-                                <!-- Le contenu sera rempli dynamiquement -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <h3 class="text-lg font-semibold mb-2">Récapitulatif par matière:</h3>
-                    <div id="subjectResults" class="space-y-2 text-left"></div>
-                </div>
             </div>
             
+            <!-- Validation globale (pour système avancé) -->
+            <div id="validationStatus" class="mb-6 p-4 rounded-lg text-center bg-gray-100 dark:bg-gray-700">
+                <h3 class="text-xl font-bold mb-2">Validation globale</h3>
+                <div id="validationMessage" class="text-xl"></div>
+            </div>
+            
+            <!-- Résultats par semestre -->
+            <div id="semesterResults" class="mb-6 hidden">
+                <h3 class="text-lg font-semibold mb-2">Résultats par semestre</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="semestersResultsContainer"></div>
+            </div>
+            
+            <!-- Résultats par bloc -->
+            <div id="blockResults" class="mb-6 hidden">
+                <h3 class="text-lg font-semibold mb-2">Résultats par bloc</h3>
+                <div class="space-y-4" id="blocksResultsContainer"></div>
+            </div>
+            
+            <!-- Résultats détaillés -->
+            <div id="detailedResults" class="mt-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Tableau détaillé:</h3>
+                    <div class="flex gap-2">
+                        <button id="exportCSV" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm">Exporter CSV</button>
+                        <button id="exportPDF" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm">Exporter PDF</button>
+                        <button id="exportJSON" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm">Exporter JSON</button>
+                    </div>
+                </div>
+                
+                <div id="detailedTableContainer" class="overflow-x-auto mb-6">
+                    <table id="detailedTable" class="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
+                        <thead>
+                            <tr class="bg-gray-100 dark:bg-gray-700">
+                                <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Matière</th>
+                                <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Coefficient</th>
+                                <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-left">Épreuves</th>
+                                <th class="py-2 px-4 border-b border-gray-300 dark:border-gray-600 text-right">Moyenne</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailedTableBody">
+                            <!-- Le contenu sera rempli dynamiquement -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3 class="text-lg font-semibold mb-2">Récapitulatif par matière:</h3>
+                <div id="subjectResults" class="space-y-2 text-left"></div>
+            </div>
+            
+            <!-- Bouton de réinitialisation -->
             <div class="mt-8 flex justify-center">
                 <button id="resetBtn" class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors duration-200">Recommencer</button>
             </div>
-            
-            <!-- Élément caché pour l'export PDF -->
-            <div id="pdfExport" class="hidden">
-                <h2 class="text-xl font-bold mb-4">Relevé de notes</h2>
-                <p class="mb-4">Moyenne générale: <span id="pdfAverage"></span></p>
-                <div id="pdfTable"></div>
-            </div>
         </div>
-        
+
         <!-- Importation du fichier JavaScript principal en mode module -->
         <script type="module" src="js/app.js"></script>
-    </div>
-    
-    <!-- Template pour une matière -->
-    <template id="subjectTemplate">
-        <div class="subject-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <div class="mb-4 flex flex-col sm:flex-row gap-4">
-                <div class="flex-grow">
-                    <label class="block mb-2">Nom de la matière</label>
-                    <input type="text" class="subject-name w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" required>
-                </div>
-                <div class="w-full sm:w-1/3">
-                    <label class="block mb-2">Coefficient</label>
-                    <input type="number" class="subject-weight w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="0.1" step="0.1" value="1" required>
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="font-semibold">Épreuves</h3>
-                    <button class="add-exam px-4 py-1 bg-primary text-white rounded-md text-sm">+ Ajouter une épreuve</button>
-                </div>
-                <div class="exams-container space-y-4">
-                    <!-- Les épreuves seront ajoutées ici -->
-                </div>
-                <div class="percentage-total mt-2 text-sm"></div>
-            </div>
-        </div>
-    </template>
-    
-    <!-- Template pour une épreuve -->
-    <template id="examTemplate">
-        <div class="exam-item flex flex-col sm:flex-row gap-2 border-t border-gray-200 dark:border-gray-700 pt-3">
-            <div class="flex-grow">
-                <label class="block mb-1 text-sm">Note (/20)</label>
-                <input type="number" class="exam-grade w-full px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="0" max="20" step="0.1" required>
-            </div>
-            <div class="flex-grow">
-                <label class="block mb-1 text-sm">Pourcentage (%)</label>
-                <input type="number" class="exam-percentage w-full px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="1" max="100" step="1" required>
-            </div>
-            <div class="flex items-end mb-1">
-                <button class="remove-exam px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm">✕</button>
-            </div>
-        </div>
-    </template>
 
+        <!-- Template pour une matière -->
+        <template id="subjectTemplate">
+            <div class="subject-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <div class="mb-4 flex flex-col sm:flex-row gap-4">
+                    <div class="flex-grow">
+                        <label class="block mb-2">Nom de la matière</label>
+                        <input type="text" class="subject-name w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" required>
+                    </div>
+                    <div class="w-full sm:w-1/3">
+                        <label class="block mb-2">Coefficient</label>
+                        <input type="number" class="subject-weight w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="0.1" step="0.1" value="1" required>
+                    </div>
+                </div>
+                
+                <!-- Emplacement pour les sélecteurs de blocs et semestres -->
+                <div class="selector-container mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold">Épreuves</h3>
+                        <button class="add-exam px-4 py-1 bg-primary text-white rounded-md text-sm">+ Ajouter une épreuve</button>
+                    </div>
+                    <div class="exams-container space-y-4">
+                        <!-- Les épreuves seront ajoutées ici -->
+                    </div>
+                    <div class="percentage-total mt-2 text-sm"></div>
+                </div>
+            </div>
+        </template>
+        
+        <!-- Template pour une épreuve -->
+        <template id="examTemplate">
+            <div class="exam-item flex flex-col sm:flex-row gap-2 border-t border-gray-200 dark:border-gray-700 pt-3">
+                <div class="flex-grow">
+                    <label class="block mb-1 text-sm">Note (/20)</label>
+                    <input type="number" class="exam-grade w-full px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="0" max="20" step="0.1" required>
+                </div>
+                <div class="flex-grow">
+                    <label class="block mb-1 text-sm">Pourcentage (%)</label>
+                    <input type="number" class="exam-percentage w-full px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-base" min="1" max="100" step="1" required>
+                </div>
+                <div class="flex items-end mb-1">
+                    <button class="remove-exam px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md text-sm">✕</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Aperçu de la structure -->
+        <div id="structurePreview" class="mb-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 hidden"></div>
+
+    </div>
 </body>
 </html>

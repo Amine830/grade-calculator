@@ -1,0 +1,54 @@
+Propositions d'améliorations pour l'application de calcul de moyenne
+Voici plusieurs idées pour améliorer votre application de calcul de moyenne générale :
+
+1. Fonctionnalités de sauvegarde et chargement :
+- Sauvegarde locale : Permettre aux utilisateurs de sauvegarder leurs données dans le localStorage
+- Import/Export : Ajouter la possibilité d'importer des données depuis un fichier JSON précédemment exporté
+- Profils multiples : Permettre de créer plusieurs profils (ex: semestres différents)
+
+
+2. Améliorations visuelles et UX
+- Mode présentation : Ajouter un mode plein écran pour présenter les résultats
+- Graphiques : Intégrer des visualisations graphiques (histogrammes, diagrammes circulaires) avec Chart.js
+- Animations de transition : Améliorez les transitions entre étapes avec des animations fluides
+- Mode impression : Style spécifique pour l'impression des résultats
+
+3. Fonctionnalités avancées
+- Simulation de notes : "Que se passe-t-il si j'obtiens telle note à la prochaine épreuve ?"
+- Objectifs : Définir une note cible et calculer ce qu'il faut pour l'atteindre
+- Modèles prédéfinis : Templates pour différents types de formations (licence, master, etc.)
+- Catégories de matières : Regrouper les matières par catégorie (majeure, mineure, option, etc.)
+
+
+4. Performance et accessibilité
+- Mode hors ligne : Rendre l'application totalement fonctionnelle hors ligne (PWA)
+- Accessibilité : Améliorer la compatibilité avec les lecteurs d'écran
+- Raccourcis clavier : Ajouter des raccourcis pour les actions principales
+- Optimisation mobile : Améliorer davantage l'expérience sur petits écrans
+
+
+5. Intégrations sociales et partage
+- Partage de résultats : Générer un lien de partage des résultats
+- Export vers d'autres plateformes : Google Sheets, Excel Online, etc.
+- Comparaison anonymisée : Comparer ses résultats avec la moyenne de tous les utilisateurs
+
+
+6. Interactivité avancée
+- Glisser-déposer : Réorganiser les matières par glisser-déposer
+- Duplication d'éléments : Dupliquer rapidement une matière ou une épreuve
+- Panneau latéral pour les paramètres : Configurer l'application sans quitter l'écran principal
+- Mode édition/lecture : Verrouiller les données pour éviter les modifications accidentelles
+
+
+7. Personnalisation
+- Thèmes personnalisés : Permettre aux utilisateurs de créer leurs propres thèmes de couleur
+- Options d'affichage : Choisir quelles colonnes afficher dans les tableaux
+- Messages personnalisés : Personnaliser les messages d'évaluation
+- Barème personnalisé : Adapter les seuils pour les messages d'évaluation
+
+
+8. Validation et UX
+- Validation en temps réel : Étendre la validation en temps réel à tous les champs
+- Suggestions intelligentes : Proposer des pourcentages équilibrés pour les épreuves
+- Onboarding : Ajouter un tutoriel pour les nouveaux utilisateurs
+- Undo/Redo : Permettre d'annuler/rétablir les dernières actions
