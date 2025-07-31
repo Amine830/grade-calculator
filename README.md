@@ -1,3 +1,4 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/3ba5c5b7-a046-4172-99f9-ddec98bb245a/deploy-status)](https://app.netlify.com/projects/grade-calculat0r/deploys)
 # Calculateur de Moyenne Générale
 
 ## Description
