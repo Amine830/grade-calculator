@@ -1,35 +1,44 @@
-/* Animation pour les messages d'erreur */
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toast-in {
+    from {
+        transform: translateX(22px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.surface-card,
+.subject-card {
+    animation: fade-in-up 220ms ease-out;
 }
 
 #errorContainer > div {
-    animation: slideIn 0.3s ease-out forwards;
+    animation: toast-in 220ms ease-out forwards;
 }
 
 #errorContainer > div.opacity-0 {
-    transition: opacity 0.3s ease;
+    transition: opacity 180ms ease;
     opacity: 0;
 }
 
-/* Animation du bouton de thème */
 #theme-toggle {
-    transition: transform 0.5s ease;
+    transition: transform 220ms ease;
 }
 
 #theme-toggle.rotate-180 {
     transform: rotate(180deg);
-}
-
-/* Effet subtil de pulsation lors du changement de thème */
-.theme-transition {
-    animation: pulse 0.5s ease-in-out;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
 }
 

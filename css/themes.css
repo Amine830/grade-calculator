@@ -1,11 +1,37 @@
-/* Classes pour le mode clair/sombre */
-body {
-    transition-property: background-color, color;
-    transition-duration: 200ms;
-    transition-timing-function: ease;
+html,
+body,
+.surface-card,
+input,
+select,
+textarea,
+.icon-button,
+.step-pill,
+.status-panel {
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-/* Couleurs spécifiques aux thèmes qui ne sont pas déjà gérées par Tailwind */
-.dark .text-primary {
-    color: #8a89ff;
+html.dark {
+    --color-bg: #0e1426;
+    --color-surface: #131c33;
+    --color-surface-soft: #18233f;
+    --color-text: #e8eeff;
+    --color-text-muted: #afbddf;
+    --color-border: #25365f;
+
+    --color-primary: #6b9dff;
+    --color-primary-hover: #5a8df0;
+    --color-success: #3cc48d;
+    --color-danger: #f07070;
+    --color-info: #65b5ff;
+    --color-warning: #f2b158;
+
+    --shadow-1: 0 8px 24px rgba(0, 0, 0, 0.36);
+    --shadow-2: 0 16px 34px rgba(0, 0, 0, 0.45);
+    --focus-ring: 0 0 0 3px rgba(107, 157, 255, 0.34);
+}
+
+html.dark [data-tooltip]:hover::after,
+html.dark [data-tooltip]:focus-visible::after {
+    background: #e8eeff;
+    color: #0e1426;
 }
