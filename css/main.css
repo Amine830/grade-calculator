@@ -500,6 +500,35 @@ button:focus-visible {
     cursor: pointer;
 }
 
+.icon-button .icon-sun,
+.icon-button .icon-moon {
+    stroke-width: 2;
+}
+
+.icon-button .icon-sun {
+    color: #d99800;
+    display: block;
+}
+
+.icon-button .icon-moon {
+    color: #9cc5ff;
+    display: none;
+}
+
+html.dark .icon-button .icon-sun {
+    display: none;
+}
+
+html.dark .icon-button .icon-moon {
+    display: block;
+}
+
+#theme-toggle[data-tooltip]::after,
+#theme-toggle[data-tooltip]:hover::after,
+#theme-toggle[data-tooltip]:focus-visible::after {
+    content: none !important;
+}
+
 .side-panel {
     position: sticky;
     top: 1.2rem;
