@@ -60,18 +60,78 @@
                 </header>
 
                 <nav class="stepper" aria-label="Progression">
-                        <ol>
-                                <li><span class="step-pill">1. Configuration</span></li>
-                                <li><span class="step-pill">2. Matières</span></li>
-                                <li><span class="step-pill">3. Résultats</span></li>
-                        </ol>
+                    <ol role="tablist" aria-label="Etapes">
+                        <li role="presentation">
+                            <button
+                                id="tab-step0"
+                                class="step-tab is-active"
+                                role="tab"
+                                type="button"
+                                aria-selected="true"
+                                aria-controls="step0"
+                                tabindex="0"
+                                data-step-target="step0"
+                            >
+                                <span class="step-index">1</span>
+                                <span class="step-label">Configuration</span>
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                id="tab-step1"
+                                class="step-tab is-locked"
+                                role="tab"
+                                type="button"
+                                aria-selected="false"
+                                aria-controls="step1"
+                                tabindex="-1"
+                                data-step-target="step1"
+                                aria-disabled="true"
+                            >
+                                <span class="step-index">2</span>
+                                <span class="step-label">Matières</span>
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                id="tab-step2"
+                                class="step-tab is-locked"
+                                role="tab"
+                                type="button"
+                                aria-selected="false"
+                                aria-controls="step2"
+                                tabindex="-1"
+                                data-step-target="step2"
+                                aria-disabled="true"
+                            >
+                                <span class="step-index">3</span>
+                                <span class="step-label">Saisie</span>
+                            </button>
+                        </li>
+                        <li role="presentation">
+                            <button
+                                id="tab-step3"
+                                class="step-tab is-locked"
+                                role="tab"
+                                type="button"
+                                aria-selected="false"
+                                aria-controls="step3"
+                                tabindex="-1"
+                                data-step-target="step3"
+                                aria-disabled="true"
+                            >
+                                <span class="step-index">4</span>
+                                <span class="step-label">Résultats</span>
+                            </button>
+                        </li>
+                    </ol>
                 </nav>
 
                 <div class="app-layout">
                         <main>
         
         <!-- Étape 0: Configuration du système d'évaluation -->
-                <section id="step0" class="surface-card mb-8" aria-labelledby="config-title">
+                <section id="step0" class="surface-card mb-8" role="tabpanel" aria-labelledby="tab-step0" aria-hidden="false">
                     <h2 id="config-title">Configuration du système d'évaluation</h2>
           
                     <div class="config-grid mb-4">
@@ -131,7 +191,7 @@
         </section>
 
         <!-- Étape 1: Saisie du nombre de matières -->
-        <section id="step1" class="surface-card mb-8 hidden" aria-labelledby="step1-title">
+        <section id="step1" class="surface-card mb-8 hidden" role="tabpanel" aria-labelledby="tab-step1" aria-hidden="true">
             <h2 id="step1-title">Nombre de matières</h2>
             <div class="row-responsive">
                 <div class="field-grow">
@@ -145,7 +205,7 @@
         </section>
         
         <!-- Étape 2: Configuration des matières et épreuves -->
-        <section id="step2" class="mb-8 hidden" aria-labelledby="step2-title">
+        <section id="step2" class="mb-8 hidden" role="tabpanel" aria-labelledby="tab-step2" aria-hidden="true">
             <h2 id="step2-title" class="section-title">Configuration des matières</h2>
             <div id="subjectsContainer" class="space-y-6"></div>
             <div class="card-actions mt-6">
@@ -154,7 +214,7 @@
         </section>
         
         <!-- Étape 3: Résultat -->
-        <section id="step3" class="surface-card mb-8 hidden" aria-labelledby="results-title">
+        <section id="step3" class="surface-card mb-8 hidden" role="tabpanel" aria-labelledby="tab-step3" aria-hidden="true">
             <h2 id="results-title">Résultats</h2>
             
             <!-- Résumé global -->
@@ -271,6 +331,17 @@
 
         <!-- Aperçu de la structure -->
         <div id="structurePreview" class="mb-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 hidden"></div>
+
+        <div id="resetConfirmModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle" aria-describedby="resetModalDescription">
+            <div class="modal-card" role="document">
+                <h3 id="resetModalTitle">Recommencer la saisie ?</h3>
+                <p id="resetModalDescription">Cette action supprime vos données en cours. Voulez-vous continuer ?</p>
+                <div class="modal-actions">
+                    <button id="cancelResetBtn" class="btn btn-ghost" type="button">Annuler</button>
+                    <button id="confirmResetBtn" class="btn btn-danger" type="button">Confirmer</button>
+                </div>
+            </div>
+        </div>
 
         <!-- Cibles techniques pour export PDF (utilisées par JS) -->
         <div class="hidden" aria-hidden="true">

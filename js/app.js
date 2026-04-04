@@ -21,6 +21,151 @@ let detailedData = null;
 const examTemplate = document.getElementById('examTemplate');
 const subjectTemplate = document.getElementById('subjectTemplate');
 const subjectsContainer = document.getElementById('subjectsContainer');
+const stepOrder = ['step0', 'step1', 'step2', 'step3'];
+let highestUnlockedStepIndex = 0;
+let lastFocusedElement = null;
+
+function getStepIndex(stepId) {
+    return stepOrder.indexOf(stepId);
+}
+
+function updateStepTabs(activeStepId) {
+    const activeIndex = getStepIndex(activeStepId);
+    const tabs = document.querySelectorAll('[data-step-target]');
+
+    tabs.forEach(tab => {
+        const targetStep = tab.dataset.stepTarget;
+        const targetIndex = getStepIndex(targetStep);
+        const isUnlocked = targetIndex <= highestUnlockedStepIndex;
+        const isActive = targetStep === activeStepId;
+        const isComplete = targetIndex < activeIndex && isUnlocked;
+
+        tab.classList.toggle('is-active', isActive);
+        tab.classList.toggle('is-complete', isComplete);
+        tab.classList.toggle('is-locked', !isUnlocked);
+
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.setAttribute('aria-disabled', isUnlocked ? 'false' : 'true');
+        tab.setAttribute('tabindex', isActive ? '0' : '-1');
+    });
+}
+
+function showOnlyStep(stepId) {
+    const stepIndex = getStepIndex(stepId);
+    if (stepIndex === -1) return;
+
+    stepOrder.forEach(id => {
+        const section = document.getElementById(id);
+        if (!section) return;
+
+        const isActive = id === stepId;
+        section.classList.toggle('hidden', !isActive);
+        section.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+    });
+
+    highestUnlockedStepIndex = Math.max(highestUnlockedStepIndex, stepIndex);
+    updateStepTabs(stepId);
+}
+
+function setupStepTabs() {
+    const tabs = document.querySelectorAll('[data-step-target]');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetStep = tab.dataset.stepTarget;
+            const targetIndex = getStepIndex(targetStep);
+
+            if (targetIndex > highestUnlockedStepIndex) {
+                showMessage('Cette étape sera disponible après la précédente.', 'warning');
+                return;
+            }
+
+            if (targetStep === 'step3' && !detailedData) {
+                showMessage('Calculez d\'abord vos résultats pour ouvrir cette étape.', 'warning');
+                return;
+            }
+
+            showOnlyStep(targetStep);
+        });
+    });
+}
+
+function closeResetModal() {
+    const modal = document.getElementById('resetConfirmModal');
+    if (!modal) return;
+
+    modal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+
+    if (lastFocusedElement instanceof HTMLElement) {
+        lastFocusedElement.focus();
+    }
+}
+
+function openResetModal() {
+    const modal = document.getElementById('resetConfirmModal');
+    const confirmBtn = document.getElementById('confirmResetBtn');
+    if (!modal) return;
+
+    lastFocusedElement = document.activeElement;
+    modal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    confirmBtn?.focus();
+}
+
+function performFullReset() {
+    // Réinitialiser complètement les données
+    resetAllData();
+    localStorage.clear();
+
+    // Réinitialiser l'interface utilisateur
+    resetConfigurationUI();
+
+    // Vider le conteneur de matières
+    if (subjectsContainer) {
+        subjectsContainer.innerHTML = '';
+    }
+
+    // Masquer le résumé de structure
+    const structurePreview = document.getElementById('structurePreview');
+    if (structurePreview) {
+        structurePreview.classList.add('hidden');
+    }
+
+    // Masquer toutes les étapes sauf l'étape 0
+    highestUnlockedStepIndex = 0;
+    showOnlyStep('step0');
+
+    // Effacer la variable globale des données détaillées
+    detailedData = null;
+}
+
+function setupResetModal() {
+    const modal = document.getElementById('resetConfirmModal');
+    const cancelBtn = document.getElementById('cancelResetBtn');
+    const confirmBtn = document.getElementById('confirmResetBtn');
+
+    if (!modal || !cancelBtn || !confirmBtn) return;
+
+    cancelBtn.addEventListener('click', closeResetModal);
+
+    confirmBtn.addEventListener('click', () => {
+        closeResetModal();
+        performFullReset();
+    });
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeResetModal();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeResetModal();
+        }
+    });
+}
 
 /**
  * Fonction d'initialisation exécutée au chargement de la page
@@ -43,10 +188,11 @@ function initApp() {
     // Initialiser la configuration avancée
     setupAdvancedConfig();
 
-    document.getElementById('step0')?.classList.remove('hidden');
-    document.getElementById('step1')?.classList.add('hidden');
-    document.getElementById('step2')?.classList.add('hidden');
-    document.getElementById('step3')?.classList.add('hidden');
+    // Initialiser les tabs de navigation entre étapes
+    setupStepTabs();
+    setupResetModal();
+
+    showOnlyStep('step0');
 
     // Configurer les écouteurs pour les boutons d'export
     setupExportButtons();
@@ -96,8 +242,7 @@ function setupMainButtons() {
         }
         
         // Passer à l'étape 2
-        document.getElementById('step1').classList.add('hidden');
-        document.getElementById('step2').classList.remove('hidden');
+        showOnlyStep('step2');
     });
     
     // Bouton de calcul des moyennes
@@ -147,41 +292,12 @@ function setupMainButtons() {
         displayResults(results);
         
         // Passer à l'étape suivante
-        document.getElementById('step2').classList.add('hidden');
-        document.getElementById('step3').classList.remove('hidden');
+        showOnlyStep('step3');
     });
 
     // Bouton de réinitialisation
     document.getElementById('resetBtn').addEventListener('click', () => {
-        if (confirm("Voulez-vous vraiment recommencer? Toutes vos données seront perdues.")) {
-            // Réinitialiser complètement les données
-            resetAllData();
-            localStorage.clear();
-            
-            // Réinitialiser l'interface utilisateur
-            resetConfigurationUI();
-            
-            // Vider le conteneur de matières
-            if (subjectsContainer) {
-                subjectsContainer.innerHTML = '';
-            }
-            
-            // Masquer le résumé de structure
-            const structurePreview = document.getElementById('structurePreview');
-            if (structurePreview) {
-                structurePreview.classList.add('hidden');
-            }
-            
-            // Masquer toutes les étapes sauf l'étape 0
-            document.getElementById('step3').classList.add('hidden');
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step0').classList.remove('hidden');
-            
-            // Effacer la variable globale des données détaillées
-            detailedData = null;
-            
-        }
+        openResetModal();
     });
     
     // Boutons d'export
@@ -200,10 +316,7 @@ function setupMainButtons() {
  * Affiche l'étape 1 de l'application
  */
 function showStep1() {
-    document.getElementById('step0').classList.add('hidden');
-    document.getElementById('step2').classList.add('hidden');
-    document.getElementById('step3').classList.add('hidden');
-    document.getElementById('step1').classList.remove('hidden');
+    showOnlyStep('step1');
     
     generateStructurePreview();
 }
