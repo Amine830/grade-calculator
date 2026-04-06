@@ -1,182 +1,149 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/3ba5c5b7-a046-4172-99f9-ddec98bb245a/deploy-status)](https://app.netlify.com/projects/grade-calculat0r/deploys)
-# Calculateur de Moyenne Générale
+# Calculateur de Moyenne Generale
 
-## Description
+<p align="left">
+  <a href="https://app.netlify.com/projects/grade-calculat0r/deploys"><img alt="Netlify" src="https://api.netlify.com/api/v1/badges/3ba5c5b7-a046-4172-99f9-ddec98bb245a/deploy-status"></a>
+  <a href="https://developer.mozilla.org/docs/Web/HTML"><img alt="HTML5" src="https://img.shields.io/badge/HTML5-Structure-E34F26?logo=html5&logoColor=white"></a>
+  <a href="https://developer.mozilla.org/docs/Web/CSS"><img alt="CSS3" src="https://img.shields.io/badge/CSS3-Design-1572B6?logo=css3&logoColor=white"></a>
+  <a href="https://developer.mozilla.org/docs/Web/JavaScript"><img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=111827"></a>
+  <a href="https://tailwindcss.com/"><img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-CDN-06B6D4?logo=tailwindcss&logoColor=white"></a>
+  <a href="https://github.com/parallax/jsPDF"><img alt="jsPDF" src="https://img.shields.io/badge/jsPDF-2.5.1-BB1111"></a>
+  <a href="https://github.com/simonbengtsson/jsPDF-AutoTable"><img alt="AutoTable" src="https://img.shields.io/badge/jsPDF_AutoTable-3.5.28-7C3AED"></a>
+  <a href="https://web.dev/progressive-web-apps/"><img alt="PWA Ready" src="https://img.shields.io/badge/Web_Manifest-PWA-2563EB"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-16A34A"></a>
+</p>
 
-Le Calculateur de Moyenne Générale est une application web conçue pour aider les étudiants à calculer leurs moyennes de manière précise et personnalisée. Cette application permet de gérer plusieurs matières avec des coefficients différents et plusieurs épreuves par matière, chacune avec son propre pourcentage. Elle supporte également une organisation académique avancée avec des blocs de matières et des semestres.
+Application web pour calculer une moyenne generale ponderee avec coefficients, epreuves, semestres, blocs, validation academique et export CSV/JSON/PDF.
 
-## Fonctionnalités
+## Sommaire
 
-- **Interface intuitive en 4 étapes** : configuration du système d'évaluation, configuration des matières, saisie des notes, affichage des résultats
-- **Mode sombre/clair** avec sauvegarde des préférences
-- **Organisation académique avancée** :
-  - Structure par blocs de matières et/ou par semestres
-  - Règles de compensation personnalisables entre matières et entre blocs
-  - Seuil de validation configurable (par défaut : 10/20)
-- **Personnalisation complète** :
-  - Nombre illimité de matières (jusqu'à 50)
-  - Coefficients personnalisables par matière
-  - Plusieurs épreuves par matière avec pondération en pourcentage
-  - Regroupement de matières par blocs et/ou semestres
-- **Visualisation de la structure** avec un aperçu interactif de l'organisation académique
-- **Calcul précis** des moyennes pondérées à tous les niveaux (matière, bloc, semestre)
-- **Affichage détaillé des résultats** avec statut de validation
-- **Exportation des données** en formats CSV, JSON et PDF
-- **Validation en temps réel** des saisies pour éviter les erreurs
-- **Interface responsive** fonctionnant sur ordinateurs, tablettes et smartphones
-- **Persistance des données** grâce au stockage local dans le navigateur
+- [Apercu](#apercu)
+- [Fonctionnalites](#fonctionnalites)
+- [Technologies](#technologies)
+- [Structure du projet](#structure-du-projet)
+- [Demarrage rapide](#demarrage-rapide)
+- [Utilisation](#utilisation)
+- [Persistance des donnees](#persistance-des-donnees)
+- [Accessibilite et UX](#accessibilite-et-ux)
+- [Roadmap courte](#roadmap-courte)
+- [Licence](#licence)
 
-## Technologies utilisées
+## Apercu
 
-- **HTML5** pour la structure du document
-- **CSS3** avec **Tailwind CSS** pour le style et le responsive design
-- **JavaScript** (Vanilla JS) pour toutes les fonctionnalités
-- **LocalStorage API** pour la persistance des données
-- **jsPDF** et **jspdf-autotable** pour l'export en PDF
-- Aucun framework ou bibliothèque lourde, pour des performances optimales
+Le projet permet de modeliser une annee academique (matieres, epreuves, blocs, semestres), de calculer automatiquement les moyennes et de produire un releve exportable.
 
-## Guide d'utilisation
+## Fonctionnalites
 
-### Étape 0 : Configuration du système d'évaluation
+- Parcours en etapes avec onglets dynamiques (Configuration, Matieres, Saisie, Resultats).
+- Configuration academique flexible:
+  - semestres optionnels
+  - blocs optionnels
+  - seuil de validation configurable
+  - options de compensation configurees
+- Gestion de 1 a 50 matieres avec coefficients personnalises.
+- Saisie de plusieurs epreuves par matiere avec pourcentages.
+- Validation en temps reel des entrees (notes, pourcentages, bornes).
+- Resultats detailles:
+  - moyenne globale
+  - moyennes par matiere
+  - moyennes par bloc
+  - moyennes par semestre
+  - statut de validation
+- Export des resultats en CSV, JSON et PDF.
+- Theme clair/sombre avec preference utilisateur persistante.
+- UI modernisee: tabs de progression, toasts, modal de confirmation, panneau d'aide.
 
-1. Définissez la structure académique (semestres et/ou blocs)
-2. Configurez les règles de validation et de compensation
-3. Ajoutez des blocs et/ou semestres selon vos besoins
-4. Cliquez sur "Continuer" pour passer à l'étape suivante
+## Technologies
 
-### Étape 1 : Configuration du nombre de matières
+- HTML5
+- CSS3 + tokens de design system
+- JavaScript vanilla (ES modules)
+- Tailwind CSS (via CDN)
+- jsPDF + jsPDF AutoTable
+- LocalStorage (persistance)
+- Web Manifest + favicons
 
-1. Entrez le nombre de matières que vous souhaitez inclure dans votre calcul
-2. Cliquez sur "Continuer" pour passer à l'étape suivante
+## Structure du projet
 
-### Étape 2 : Saisie des matières et des notes
-
-Pour chaque matière :
-
-1. Saisissez le nom de la matière
-2. Définissez le coefficient de la matière
-3. Associez la matière à un bloc et/ou un semestre si nécessaire
-4. Ajoutez une ou plusieurs épreuves en indiquant :
-   - La note obtenue (sur 20)
-   - Le pourcentage que représente cette épreuve dans la moyenne de la matière
-5. Assurez-vous que le total des pourcentages pour chaque matière est égal à 100%
-6. Cliquez sur "Calculer la moyenne générale" une fois toutes les données saisies
-
-### Étape 3 : Résultats
-
-- Visualisez votre moyenne générale et une évaluation personnalisée
-- Consultez le statut de validation de votre année
-- Examinez les résultats détaillés par bloc et par semestre
-- Consultez le détail des moyennes par matière
-- Exportez vos résultats dans différents formats :
-  - CSV (compatible avec Excel)
-  - JSON (pour les développeurs)
-  - PDF (document formaté pour l'impression ou le partage)
-
-## Installation et déploiement
-
-### Méthode simple (utilisation directe)
-
-1. Téléchargez l'ensemble des fichiers
-2. Ouvrez le fichier `index.html` dans un navigateur web
-
-### Méthode pour développeurs
-
-1. Clonez le dépôt : `git clone https://github.com/amine830/grade-calculator.git`
-2. Aucune dépendance à installer (tout est chargé via CDN)
-3. Ouvrez `index.html` dans votre navigateur ou utilisez un serveur web local
-
-
-### Structure du projet
-
-Le projet est organisé selon une architecture modulaire pour faciliter la maintenance et les extensions :
-
-```plaintext
+```text
 grade-calculator/
-├── index.html              # Point d'entrée de l'application
-├── css/                    # Styles et animations
-│   ├── main.css            # Styles généraux
-│   ├── themes.css          # Gestion des thèmes clair/sombre
-│   └── animations.css      # Animations de l'interface
-├── js/                     # Scripts JavaScript
-│   ├── app.js              # Point d'entrée et orchestration
-│   ├── ui/                 # Composants d'interface utilisateur
-│   │   ├── components.js   # Génération dynamique des éléments
-│   │   ├── themes.js       # Gestion du thème clair/sombre
-│   │   └── notifications.js # Système de notifications
-│   ├── core/               # Logique métier
-│   │   ├── calculator.js           # Calculs des moyennes simples
-│   │   ├── advanced-calculator.js  # Calculs avec blocs et semestres
-│   │   ├── data-manager.js         # Gestion de la persistance des données
-│   │   └── validation.js           # Validation des entrées
-│   └── export/             # Fonctionnalités d'exportation
-│       ├── csv.js          # Export au format CSV
-│       ├── json.js         # Export au format JSON
-│       └── pdf.js          # Export au format PDF
+├── index.html
+├── assets/
+│   ├── site.webmanifest
+│   └── icons/
+│       ├── apple-touch-icon.png
+│       ├── favicon-16x16.png
+│       ├── favicon-32x32.png
+│       ├── favicon.ico
+│       ├── android-chrome-192x192.png
+│       └── android-chrome-512x512.png
+├── css/
+│   ├── main.css
+│   ├── themes.css
+│   └── animations.css
+├── js/
+│   ├── app.js
+│   ├── core/
+│   │   ├── advanced-calculator.js
+│   │   ├── calculator.js
+│   │   ├── data-manager.js
+│   │   └── validation.js
+│   ├── export/
+│   │   ├── csv.js
+│   │   ├── json.js
+│   │   └── pdf.js
+│   └── ui/
+│       ├── components.js
+│       ├── notifications.js
+│       └── themes.js
+└── README.md
 ```
 
-## Gestion des données
+## Demarrage rapide
 
-L'application utilise le stockage local (localStorage) du navigateur pour :
+### Option 1: ouverture directe
 
-1. **Persistance des données** : vos configurations et notes sont sauvegardées automatiquement
-2. **Préférences utilisateur** : le thème choisi (clair/sombre) est mémorisé
-3. **Continuité d'utilisation** : vous pouvez quitter et revenir plus tard sans perdre vos données ~(+/-)
+1. Cloner le depot.
+2. Ouvrir `index.html` dans un navigateur moderne.
 
-## Fonctionnalités avancées
+### Option 2: serveur local (recommande)
 
-### Structure académique personnalisable
+```bash
+# Depuis la racine du projet
+python3 -m http.server 8080
+```
 
-- **Organisation par blocs** : regroupez les matières par unités d'enseignement
-- **Organisation par semestres** : répartissez vos matières sur plusieurs périodes
-- **Combinaison possible** : utilisez à la fois les blocs et les semestres
+Puis ouvrir: `http://localhost:8080`
 
-### Règles de validation configurables
+## Utilisation
 
-- **Seuil de validation** : définissez la note minimale pour valider (par défaut : 10/20)
-- **Compensation entre matières** : permettez aux bonnes notes de compenser les moins bonnes
-- **Compensation entre blocs** : choisissez si les blocs peuvent se compenser entre eux
+1. Configurer la structure academique et le seuil.
+2. Choisir le nombre de matieres.
+3. Saisir matieres, coefficients et epreuves.
+4. Calculer, analyser les resultats, puis exporter.
 
-### Aperçu visuel de la structure
+## Persistance des donnees
 
-Un panneau interactif vous permet de visualiser l'organisation de votre année avec :
-- Représentation hiérarchique des semestres, blocs et matières
-- Affichage des coefficients pour chaque matière
-- Indicateurs visuels pour les règles de validation
+Les donnees sont stockees dans le navigateur via `localStorage`:
 
-## Contribution et développement
+- configuration academique
+- matieres et epreuves
+- preference de theme
 
-### Prérequis
+## Accessibilite et UX
 
-- Connaissances de base en HTML, CSS et JavaScript
-- Un éditeur de code (VS Code, Sublime Text, etc.)
-- Un navigateur moderne (Chrome, Firefox, Edge, Safari)
+- Labels visibles sur les champs.
+- Etats focus explicites.
+- Navigation par tabs avec attributs ARIA.
+- Modal de confirmation pour la reinitialisation.
+- Interface responsive (mobile, tablette, desktop).
 
-### Extension des fonctionnalités
+## Roadmap courte
 
-Pour toute autre contribution, merci de créer une pull request sur le dépôt GitHub.
+- Ajouter des tests automatises (unitaires + E2E).
+- Renforcer la robustesse des imports/exports.
 
-### Bonnes pratiques
 
-Le code suit une architecture modulaire avec :
-
-- Séparation claire entre UI, logique métier et exportation
-- Utilisation des modules ES6 pour une meilleure organisation
-- Documentation des fonctions avec JSDoc
-- Gestion des erreurs avec feedback utilisateur
-- Synchronisation des données entre l'interface et le stockage
-
-## Compatibilité
-
-L'application est compatible avec :
-
-- Chrome 80+
-- Firefox 75+
-- Safari 13+
-- Edge 80+
-- Tous les navigateurs modernes supportant ES6 et localStorage
-
-## Licence et crédits
+## Licence
 
 Ce projet est sous licence MIT et utilise les bibliothèques suivantes :
 
